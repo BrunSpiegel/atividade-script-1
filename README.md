@@ -1,1 +1,0 @@
-# atividade-script-1

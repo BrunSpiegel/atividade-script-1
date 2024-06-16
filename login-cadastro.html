@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login e Cadastro</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Parte I: Interface de Login -->
+    <div id="login-form">
+        <h2>Portal do Usuário</h2>
+        <div class="form-group">
+            <label for="login-username">login</label>
+            <input type="text" id="login-username">
+        </div>
+        <div class="form-group">
+            <label for="login-password">Senha</label>
+            <input type="password" id="login-password">
+        </div>
+        <button>Fazer Login</button>
+        <button onclick="showRegisterForm()">Registrar</button>
+    </div>
+
+    <!-- Parte 2 Interface de Cadastro -->
+    <div id="register-form" class="hidden">
+        <h2>Cadastro do Usuário</h2>
+        <div class="form-group">
+            <label for="register-login">Login</label>
+            <input type="text" id="register-login" onblur="toUpperCase(this)">
+        </div>
+        <div class="form-group">
+            <label for="register-password">Senha</label>
+            <input type="password" id="register-password">
+        </div>
+        <div class="form-group">
+            <label for="confirm-password">Confirmar senha</label>
+            <input type="password" id="confirm-password">
+        </div>
+        <div class="form-group">
+            <label for="register-username">Nome</label>
+            <input type="text" id="register-username" onblur="toUpperCase(this)">
+        </div>
+        <div class="form-group">
+            <label for="register-address">Endereço</label>
+            <input type="text" id="register-address" onblur="toUpperCase(this)">
+        </div>
+        <div class="form-group">
+            <label for="register-cpf">CPF</label>
+            <input type="text" id="register-cpf" oninput="formatCPF(this)">
+        </div>
+        <div class="form-group">
+            <label for="register-phone">Telefones</label>
+            <div id="phone-container">
+                <input type="text" class="phone-input" onblur="toUpperCase(this)">
+            </div>
+            <button type="button" onclick="addPhone()">Adicionar Telefone</button>
+        </div>
+        <div class="form-group">
+            <label for="register-perfil">Perfil</label>
+            <select name="Perfil" id="register-perfil">
+                <option value="A">Prata</option>
+                <option value="B">Ouro</option>
+                <option value="C">Diamante</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="register-voucher">Voucher</label>
+            <input type="text" id="register-voucher" oninput="toUpperCaseVoucher(this)">
+        </div>
+        <div class="form-group">
+            <label for="register-observacao">Observações</label>
+            <textarea name="observacao" id="register-observacao" rows="10" cols="60"></textarea>
+        </div>
+        <button onclick="register()">Registrar</button>
+        <button onclick="hiddenRegisterForm()">Fazer login</button>
+    </div>
+</body>
+<script>
+    let users = [];
+    let phoneCount = 1;
+
+    function showRegisterForm() {
+        document.getElementById('login-form').classList.add('hidden');
+        document.getElementById('register-form').classList.remove('hidden');
+    }
+
+    function hiddenRegisterForm() {
+        document.getElementById('login-form').classList.remove('hidden');
+        document.getElementById('register-form').classList.add('hidden');
+    }
+
+    function toUpperCase(element) {
+        element.value = element.value.toUpperCase();
+    }
+
+    function toUpperCaseVoucher(element) {
+        element.value = element.value.toUpperCase();
+    }
+
+    function formatCPF(element) {
+        element.value = element.value.replace(/\D/g, '')
+            .replace(/(\d{3})(\d)/, '$1.$2')
+            .replace(/(\d{3})(\d)/, '$1.$2')
+            .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+    }
+
+    function addPhone() {
+        if (phoneCount < 3) {
+            const phoneContainer = document.getElementById('phone-container');
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'phone-input';
+            input.onblur = function () { toUpperCase(this); };
+            phoneContainer.appendChild(input);
+            phoneCount++;
+        }
+    }
+
+    function register() {
+        const login = document.getElementById('register-login').value;
+        const password = document.getElementById('register-password').value;
+        const confirmPassword = document.getElementById('confirm-password').value;
+        const username = document.getElementById('register-username').value;
+        const address = document.getElementById('register-address').value;
+        const cpf = document.getElementById('register-cpf').value;
+        const voucher = document.getElementById('register-voucher').value;
+        const perfil = document.getElementById('register-perfil').value;
+        const observacao = document.getElementById('register-observacao').value;
+        const phones = Array.from(document.getElementsByClassName('phone-input')).map(input => input.value);
+
+        if (!login || !password || !confirmPassword || !username || !address || !cpf || !voucher || !perfil || !observacao || phones.some(phone => !phone)) {
+            alert('Por favor, preencha todos os campos.');
+            return;
+        }
+
+        users.push({
+            login,
+            password,
+            confirmPassword,
+            username,
+            address,
+            cpf,
+            voucher,
+            perfil,
+            observacao,
+            phones
+        });
+
+        console.log(users);
+        alert('Usuário cadastrado com sucesso!');
+        phoneCount = 1;
+    }
+</script>
+
+</html>
